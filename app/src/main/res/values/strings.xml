@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TSCapp</string>
+    <!-- Outgoing Call Screen -->
+    <string name="outgoing_call_screen_avatar_desc">User Avatar</string>
+    <string name="outgoing_call_screen_microphone_off_on_desc">Microphone Off/On</string>
+    <string name="outgoing_call_screen_button_send_message">Send Message</string>
+    <string name="outgoing_call_screen_speakerphone_off_on_desc">Speakerphone Off/On</string>
+    <string name="outgoing_call_screen_hang_up_desc">Hung Up</string>
+</resources>
