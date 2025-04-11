@@ -1,15 +1,30 @@
+# Android / Gradle / Kotlin
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.gradle/
+.idea/
+build/
+captures/
+outputs/
+*.keystore
+*.jks
 local.properties
+.cxx/
+.externalNativeBuild/
+
+# Kotlin specific
+*.class
+*.jar
+*.war
+*.ear
+
+# OS generated
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+
+# Jetpack Compose preview cache
+*.preview.db
+*.preview.cache
