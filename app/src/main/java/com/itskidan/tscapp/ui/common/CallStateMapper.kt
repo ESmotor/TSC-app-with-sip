@@ -3,7 +3,7 @@ package com.itskidan.tscapp.ui.common
 import com.itskidan.domain.model.linphone.CallDirection
 import com.itskidan.domain.model.linphone.LinphoneCallState
 import com.itskidan.tscapp.ui.screens.outgoingcall.CallStateConfig
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallUiState
+import com.itskidan.tscapp.ui.screens.outgoingcall.CallUiState
 
 fun mapSysCallStateToText(state: LinphoneCallState): String {
     return when (state) {
@@ -36,162 +36,138 @@ fun mapSysCallStateToText(state: LinphoneCallState): String {
 
 
 fun mapCallStateToUiState(
-    currentState: OutgoingCallUiState,
-    callState: LinphoneCallState
-): OutgoingCallUiState {
+    currentState: CallUiState,
+    callState: LinphoneCallState,
+    timer: Timer
+): CallUiState {
+    val baseState = currentState.copy(
+        isOutgoingCall = callState.callDirection == CallDirection.OUTGOING,
+    )
     return when (callState) {
         is LinphoneCallState.Idle -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.IncomingReceived -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_RINGING
+            baseState.copy(
+                callState = CallStateConfig.UI_RINGING
             )
         }
 
         is LinphoneCallState.PushIncomingReceived -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_RINGING
+            baseState.copy(
+                callState = CallStateConfig.UI_RINGING
             )
         }
 
         is LinphoneCallState.OutgoingInit -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_RINGING
+            baseState.copy(
+                callState = CallStateConfig.UI_RINGING
             )
         }
 
         is LinphoneCallState.OutgoingProgress -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_RINGING
+            baseState.copy(
+                callState = CallStateConfig.UI_RINGING
             )
         }
 
         is LinphoneCallState.OutgoingRinging -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_CONNECTING
+            baseState.copy(
+                callState = CallStateConfig.UI_CONNECTING
             )
         }
 
         is LinphoneCallState.OutgoingEarlyMedia -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.Connected -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_CONNECTING
+            baseState.copy(
+                callState = CallStateConfig.UI_CONNECTING
             )
         }
 
         is LinphoneCallState.StreamsRunning -> {
-
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-//                callStateText = CallStateConfig.UI_RUNNING
+            if (!currentState.isRunningCall) {
+                timer.start()
+            } else {
+                timer.resume()
+            }
+            baseState.copy(
                 isRunningCall = true
             )
         }
 
         is LinphoneCallState.Pausing -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.Paused -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_PAUSED
+            timer.pause()
+            baseState.copy(
+                callState = CallStateConfig.UI_PAUSED
             )
         }
 
         is LinphoneCallState.Resuming -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.Referred -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.Error -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_ERROR
+            baseState.copy(
+                callState = CallStateConfig.UI_ERROR
             )
         }
 
         is LinphoneCallState.End -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_END
+            timer.stop()
+            baseState.copy(
+                callState = CallStateConfig.UI_END
             )
         }
 
         is LinphoneCallState.PausedByRemote -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                callStateText = CallStateConfig.UI_PAUSED
+            timer.pause()
+            baseState.copy(
+                callState = CallStateConfig.UI_PAUSED
             )
         }
 
         is LinphoneCallState.UpdatedByRemote -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.IncomingEarlyMedia -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.Updating -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
-
         is LinphoneCallState.Released -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-                isCallEnded = true
+            baseState.copy(
+                isCallEnded = true,
             )
         }
 
         is LinphoneCallState.EarlyUpdatedByRemote -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
         is LinphoneCallState.EarlyUpdating -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
 
-
         is LinphoneCallState.Unknown -> {
-            currentState.copy(
-                isOutgoingCall = callState.callDir == CallDirection.OUTGOING,
-            )
+            baseState
         }
     }
 }
+
+

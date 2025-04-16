@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itskidan.domain.usecase.linphone.LinphoneHangUpCallUseCase
 import com.itskidan.domain.usecase.linphone.ObserveCallSateUseCase
+import com.itskidan.tscapp.ui.common.Timer
 import com.itskidan.tscapp.ui.common.mapCallStateToUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +20,8 @@ class OutgoingCallViewModel @Inject constructor(
     private val linphoneHangUpCallUseCase: LinphoneHangUpCallUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(OutgoingCallUiState())
-    val uiState: StateFlow<OutgoingCallUiState> get() = _uiState
+    private val _uiState = MutableStateFlow(CallUiState())
+    val uiState: StateFlow<CallUiState> get() = _uiState
 
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage: StateFlow<String?> = _toastMessage
@@ -30,7 +29,18 @@ class OutgoingCallViewModel @Inject constructor(
     private val _callDuration = MutableStateFlow(0L)
     val callDuration: StateFlow<Long> = _callDuration.asStateFlow()
 
-    private var timerJob: Job? = null
+    private val timer = Timer(
+        coroutineScope = viewModelScope,
+        onTick = { duration ->
+            _callDuration.value = duration
+            _uiState.update { current ->
+                current.copy(
+                    callState = formatDuration(duration)
+                )
+            }
+        }
+    )
+
 
     init {
         subscribeToCallState()
@@ -46,7 +56,11 @@ class OutgoingCallViewModel @Inject constructor(
             observeCallSateUseCase.execute()
                 .collect { callState ->
                     _uiState.update { currentState ->
-                        mapCallStateToUiState(currentState, callState)
+                        mapCallStateToUiState(
+                            currentState = currentState,
+                            callState = callState,
+                            timer = timer
+                        )
                     }
                 }
         }
@@ -79,40 +93,19 @@ class OutgoingCallViewModel @Inject constructor(
     }
 
 
-    // Timer
-    fun startCallTimer() {
-        timerJob?.cancel() // Отменяем предыдущий таймер, если был
-        _callDuration.value = 0L // Сбрасываем счётчик
-
-        timerJob = viewModelScope.launch {
-            while (true) {
-                delay(1000) // Ждём 1 секунду
-                _callDuration.update { it + 1 } // Увеличиваем счётчик
-                updateCallDurationText() // Обновляем текст в UI
-            }
-        }
-    }
-
-    fun stopCallTimer() {
-        timerJob?.cancel()
-        timerJob = null
-        _callDuration.value = 0L
-    }
-
-
-
-    fun updateCallDurationText() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                callStateText = formatDurationTimer(_callDuration.value)
-            )
-        }
-    }
-
-    fun formatDurationTimer(seconds: Long): String {
+    fun formatDuration(seconds: Long): String {
         val minutes = seconds / 60
         val remainingSeconds = seconds % 60
-        return "%02d:%02d".format(minutes, remainingSeconds) // "05:23"
+        return "%02d:%02d".format(minutes, remainingSeconds)
+    }
+
+
+    fun updateCallDurationToCallState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                callState = formatDuration(_callDuration.value)
+            )
+        }
     }
 
 

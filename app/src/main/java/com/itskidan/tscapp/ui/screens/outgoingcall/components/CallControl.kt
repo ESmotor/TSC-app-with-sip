@@ -23,12 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.itskidan.tscapp.ui.components.ControlButton
 import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallUiState
+import com.itskidan.tscapp.ui.screens.outgoingcall.CallUiState
 import com.itskidan.tscapp.ui.theme.LocalPaddingValues
 
 @Composable
 fun CallControls(
-    uiState: OutgoingCallUiState,
+    uiState: CallUiState,
     onSpeakerphoneClick: () -> Unit,
     onHangUpClick: () -> Unit,
     onMicrophoneClick: () -> Unit,
