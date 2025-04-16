@@ -7,12 +7,11 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.itskidan.domain.vibration.VibrationController
 import com.itskidan.tscapp.MainActivity
-import org.linphone.core.Address
+import dagger.hilt.android.AndroidEntryPoint
 import org.linphone.core.Call
 import org.linphone.core.Core
 import org.linphone.core.CoreListenerStub
@@ -20,8 +19,14 @@ import org.linphone.core.Factory
 import org.linphone.core.tools.AndroidPlatformHelper
 import org.linphone.mediastream.Version
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CoreService : Service() {
+
+    @Inject
+    lateinit var vibrationController: VibrationController
+
     companion object {
         private const val SERVICE_NOTIF_ID = 1
         private const val SERVICE_NOTIFICATION_CHANNEL_ID = "org_linphone_core_service_notification_channel"
@@ -59,7 +64,7 @@ class CoreService : Service() {
 
                     if (it.dir == Call.Dir.Incoming && core.isVibrationOnIncomingCallEnabled) {
                         if (it.state == Call.State.IncomingReceived || it.state == Call.State.IncomingEarlyMedia) {
-                            vibrate(it.remoteAddress)
+                            vibrate()
                         }
                     }
                 }
@@ -109,7 +114,7 @@ class CoreService : Service() {
 
                         if (it.dir == Call.Dir.Incoming && core.isVibrationOnIncomingCallEnabled) {
                             if (it.state == Call.State.IncomingReceived || it.state == Call.State.IncomingEarlyMedia) {
-                                vibrate(it.remoteAddress)
+                                vibrate()
                             }
                         }
                     }
@@ -156,7 +161,6 @@ class CoreService : Service() {
             .build()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createServiceNotificationChannel() {
         val channel = NotificationChannel(
             SERVICE_NOTIFICATION_CHANNEL_ID,
@@ -173,11 +177,11 @@ class CoreService : Service() {
         manager.createNotificationChannel(channel)
     }
 
-    private fun vibrate(caller: Address?) {
-//        AndroidPlatformHelper.instance().startVibrating(caller)
+    private fun vibrate() {
+        vibrationController.start()
     }
 
     private fun stopVibration() {
-//        AndroidPlatformHelper.instance().stopVibrating()
+        vibrationController.stop()
     }
 }
