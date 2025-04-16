@@ -28,7 +28,8 @@ class LinphoneCallStatusObserverImpl @Inject constructor(
                 state: Call.State?,
                 message: String
             ) {
-                Timber.tag("MyLog").d("onCallStateChanged: call:${call.dir}, state: $state")
+                Timber.tag("MyLog").d("onCallStateChanged: Dir:${call.dir}, state: $state, status: ${call.callLog.status}")
+
                 val callDir = when (call.dir) {
                     Call.Dir.Outgoing -> CallDirection.OUTGOING
                     Call.Dir.Incoming -> CallDirection.INCOMING
@@ -50,7 +51,7 @@ class LinphoneCallStatusObserverImpl @Inject constructor(
                     Call.State.Resuming -> LinphoneCallState.Resuming(callDir = callDir)
                     Call.State.Referred -> LinphoneCallState.Referred(callDir = callDir)
                     Call.State.Error -> LinphoneCallState.Error(callDir = callDir)
-                    Call.State.End -> LinphoneCallState.End(callDir = callDir)
+                    Call.State.End ->  LinphoneCallState.End(callDir = callDir)
                     Call.State.PausedByRemote -> LinphoneCallState.PausedByRemote(callDir = callDir)
                     Call.State.UpdatedByRemote -> LinphoneCallState.UpdatedByRemote(callDir = callDir)
                     Call.State.IncomingEarlyMedia -> LinphoneCallState.IncomingEarlyMedia(callDir = callDir)

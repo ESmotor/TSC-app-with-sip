@@ -50,21 +50,12 @@ fun OutgoingCallScreen(
 
     LaunchedEffect(uiState.isCallEnded) {
         if (uiState.isCallEnded) {
-            viewModel.stopCallTimer()
             navController.popBackStack()
         }
     }
 
-    LaunchedEffect(uiState.isRunningCall) {
-        if (uiState.isRunningCall) {
-            viewModel.startCallTimer()
-        }
-    }
-
-
-
-    val avatarParams = remember(currentWindowSizeClass, uiState.userAvatar) {
-        getAvatarParams(currentWindowSizeClass, uiState.userAvatar)
+    val avatarParams = remember(currentWindowSizeClass, uiState.contactAvatar) {
+        getAvatarParams(currentWindowSizeClass, uiState.contactAvatar)
     }
 
     OutgoingCallContent(
@@ -84,7 +75,7 @@ fun OutgoingCallScreen(
 @Composable
 private fun OutgoingCallContent(
     avatarParams: AvatarParams,
-    uiState: OutgoingCallUiState,
+    uiState: CallUiState,
     modifier: Modifier = Modifier,
     onSpeakerphoneClick: () -> Unit,
     onHangUpClick: () -> Unit,
@@ -114,8 +105,8 @@ private fun OutgoingCallContent(
             CallHeader(
                 modifier = Modifier.weight(1f),
                 avatarParams = avatarParams,
-                outgoingCallName = uiState.outgoingCallName,
-                callStatus = uiState.callStateText
+                outgoingCallName = uiState.contactCaption,
+                callStatus = uiState.callState
             )
 
             CallControls(
@@ -135,8 +126,8 @@ private fun OutgoingCallContent(
 @Composable
 fun OutgoingCallScreenPreview() {
     AppTheme {
-        val uiState = OutgoingCallUiState()
-        val userAvatar = uiState.userAvatar
+        val uiState = CallUiState()
+        val userAvatar = uiState.contactAvatar
         val windowSizeClass = WindowWidthSizeClass.Compact
         val avatarParams = remember(windowSizeClass, userAvatar) {
             getAvatarParams(windowSizeClass, userAvatar)

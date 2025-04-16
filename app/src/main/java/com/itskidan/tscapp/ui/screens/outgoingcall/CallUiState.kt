@@ -1,31 +1,12 @@
 package com.itskidan.tscapp.ui.screens.outgoingcall
 
-sealed interface CallDirection {
-    val isOutgoing: Boolean
-}
-
-sealed class CallUiState {
-
-    object Idle : CallUiState() // general
-
-    sealed class Incoming : CallUiState(), CallDirection {
-        override val isOutgoing: Boolean = false
-
-        object Ringing : Incoming()
-        object Connecting : Incoming()
-    }
-
-    sealed class Outgoing : CallUiState(), CallDirection {
-        override val isOutgoing: Boolean = true
-
-        object Ringing : Outgoing()
-        object Connecting : Outgoing()
-
-    }
-
-    object Running : CallUiState() // general
-    object Paused : CallUiState() // general
-    object Ended : CallUiState()  // general
-    object Error : CallUiState()   // general
-
-}
+data class CallUiState(
+    val isOutgoingCall: Boolean = false,
+    val callState: String = "Calling...",
+    val contactCaption: String = "Valera Smirnov",
+    val contactAvatar: Any? = null,
+    val isMute: Boolean = false,
+    val isSpeakerphone: Boolean = false,
+    val isCallEnded: Boolean = false,
+    val isRunningCall: Boolean = false,
+)
