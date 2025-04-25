@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.itskidan.tscapp" />
+                  <option name="mobileSdkAppId" value="1:1097177499241:android:f910097cb7662026ae84f8" />
+                  <option name="projectId" value="tsc-linphonefcm" />
+                  <option name="projectNumber" value="1097177499241" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

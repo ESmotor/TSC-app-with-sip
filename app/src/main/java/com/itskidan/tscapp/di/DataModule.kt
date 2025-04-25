@@ -1,6 +1,6 @@
 package com.itskidan.tscapp.di
 
-import com.itskidan.data.repository.DrawerRepositoryImpl
+import com.itskidan.data.repository.impl.DrawerRepositoryImpl
 import com.itskidan.domain.repository.DrawerRepository
 import dagger.Binds
 import dagger.Module

@@ -4,16 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itskidan.data.config.LinphoneConfig
 import com.itskidan.domain.model.DrawerItem
+import com.itskidan.domain.repository.FcmRepository
 import com.itskidan.domain.usecase.GetDrawerItemsUseCase
 import com.itskidan.domain.usecase.linphone.LinphoneMakeCallUseCase
 import com.itskidan.domain.usecase.linphone.LinphoneRegAccountUseCase
-import com.itskidan.domain.usecase.linphone.ObserveCallSateUseCase
-import com.itskidan.domain.usecase.linphone.ObserveCoreStateUseCase
-import com.itskidan.domain.usecase.linphone.ObserveRegStateUseCase
+import com.itskidan.domain.usecase.linphone.ObserveStatesUseCase
 import com.itskidan.tscapp.navigation.BottomNavItem
-import com.itskidan.tscapp.ui.common.mapSysCallStateToText
 import com.itskidan.tscapp.ui.common.mapCoreStateToText
 import com.itskidan.tscapp.ui.common.mapRegistrationStateToText
+import com.itskidan.tscapp.ui.common.mapSysCallStateToText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +21,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.linphone.core.Core
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,12 +30,13 @@ class HomeViewModel @Inject constructor(
     private val getDrawerItemsUseCase: GetDrawerItemsUseCase,
     private val linphoneMakeCallUseCase: LinphoneMakeCallUseCase,
     private val linphoneRegAccountUseCase: LinphoneRegAccountUseCase,
-    private val observeCallSateUseCase: ObserveCallSateUseCase,
-    private val observeCoreSateUseCase: ObserveCoreStateUseCase,
-    private val observeRegStateUseCase: ObserveRegStateUseCase,
+    private val observeStatesUseCase: ObserveStatesUseCase,
+    private val core: Core
 
-    ) : ViewModel() {
+) : ViewModel() {
 
+    @Inject
+    lateinit var fcmRepository: FcmRepository
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: MutableStateFlow<HomeUiState> get() = _uiState
@@ -51,6 +53,7 @@ class HomeViewModel @Inject constructor(
         subscribeToCoreState()
         subscribeToRegState()
         loadDrawerMenu()
+
     }
 
     // Drawer Menu
@@ -101,7 +104,7 @@ class HomeViewModel @Inject constructor(
 
     private fun subscribeToCallState() {
         viewModelScope.launch {
-            observeCallSateUseCase.execute()
+            observeStatesUseCase.getCallState()
                 .map { mapSysCallStateToText(it) }
                 .onEach { newState ->
                     _uiState.update { it.copy(callStateText = newState) }
@@ -111,7 +114,7 @@ class HomeViewModel @Inject constructor(
 
     private fun subscribeToCoreState() {
         viewModelScope.launch {
-            observeCoreSateUseCase.execute()
+            observeStatesUseCase.getCoreState()
                 .map { mapCoreStateToText(it) }
                 .onEach { newState ->
                     _uiState.update { it.copy(coreStateText = newState) }
@@ -121,11 +124,29 @@ class HomeViewModel @Inject constructor(
 
     private fun subscribeToRegState() {
         viewModelScope.launch {
-            observeRegStateUseCase.execute()
+            observeStatesUseCase.getRegState()
                 .map { mapRegistrationStateToText(it) }
                 .onEach { newState ->
                     _uiState.update { it.copy(regStateText = newState) }
                 }.collect()
+        }
+    }
+
+    fun onActivateService() {
+        viewModelScope.launch {
+            val token = fcmRepository.getFcmToken()
+            Timber.tag("MyLog").d("[onActivateServiceClicked] FcmToken: $token")
+            registerSIPAccount()
+        }
+    }
+    fun onInfoClick() {
+        viewModelScope.launch {
+            val accountList = core.accountList
+            accountList.forEach {account->
+                val params = account.params
+                val identity = params.identity
+                Timber.tag("MyLog").d("[onInfoClick] account $identity")
+            }
         }
     }
 

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig
 
 @Composable
 fun ControlButton(

@@ -2,12 +2,12 @@ package com.itskidan.tscapp.ui.common.avatar
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.itskidan.tscapp.ui.model.AvatarParams
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig.AVATAR_COMPACT_SCALE
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig.AVATAR_DEFAULT_SCALE
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig.AVATAR_EXPANDED_SCALE
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig.AVATAR_MEDIUM_SCALE
-import com.itskidan.tscapp.ui.screens.outgoingcall.OutgoingCallScreenConfig.AVATAR_SCALE_COEFFICIENT
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_COMPACT_SCALE
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_DEFAULT_SCALE
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_EXPANDED_SCALE
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_MEDIUM_SCALE
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_SCALE_COEFFICIENT
 
 fun getAvatarParams(
     windowSizeClass: WindowWidthSizeClass,

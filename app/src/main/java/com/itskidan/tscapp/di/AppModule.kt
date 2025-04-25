@@ -1,18 +1,18 @@
 package com.itskidan.tscapp.di
 
-import android.content.Context
+import com.itskidan.data.config.BuildConfigProvider
+import com.itskidan.tscapp.app.BuildConfigProviderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-//    @Provides
-//    @Singleton
-//    fun provideContext(@ApplicationContext context: Context): Context = context
+    @Provides
+    fun provideBuildConfigProvider(impl: BuildConfigProviderImpl): BuildConfigProvider {
+        return impl
+    }
 }

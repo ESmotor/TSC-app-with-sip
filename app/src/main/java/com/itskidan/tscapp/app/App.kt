@@ -9,7 +9,6 @@ import timber.log.Timber
 class App : Application() {
     val lifecycleObserver = LifecycleObserver()
 
-
     override fun onCreate() {
         super.onCreate()
         instance = this
