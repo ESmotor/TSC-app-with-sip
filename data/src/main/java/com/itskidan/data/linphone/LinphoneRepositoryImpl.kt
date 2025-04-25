@@ -1,21 +1,17 @@
 package com.itskidan.data.linphone
 
-import com.itskidan.domain.repository.linphone.LinphoneCallStatusObserver
-import com.itskidan.domain.repository.linphone.LinphoneCoreStatusObserver
-import com.itskidan.domain.repository.linphone.LinphoneRegStatusObserver
+
 import com.itskidan.domain.repository.linphone.LinphoneRepository
+import com.itskidan.domain.repository.linphone.LinphoneStatesObserver
 import org.linphone.core.Core
 import org.linphone.core.Factory
 import org.linphone.core.MediaEncryption
 import org.linphone.core.TransportType
-import timber.log.Timber
 import javax.inject.Inject
 
 class LinphoneRepositoryImpl @Inject constructor(
     private val core: Core,
-    @Suppress("unused") private val coreStatusObserver: LinphoneCoreStatusObserver,
-    @Suppress("unused") private val regStatusObserver: LinphoneRegStatusObserver,
-    @Suppress("unused") private val callStatusObserver: LinphoneCallStatusObserver
+    @Suppress("unused") private val statesObserver: LinphoneStatesObserver,
 ) : LinphoneRepository {
 
     init {
@@ -26,12 +22,14 @@ class LinphoneRepositoryImpl @Inject constructor(
         // As for everything we need to get the SIP URI of the remote and convert it to an Address
         val remoteSipUri = "sip:$phoneNumber@tscturkey.3cx.com.tr"
         val remoteAddress = Factory.instance().createAddress(remoteSipUri)
-        remoteAddress ?: return Result.failure(Exception("Invalid SIP URI")) // If address parsing fails, we can't continue with outgoing call process
+        remoteAddress
+            ?: return Result.failure(Exception("Invalid SIP URI")) // If address parsing fails, we can't continue with outgoing call process
 
         // We also need a CallParams object
         // Create call params expects a Call object for incoming calls, but for outgoing we must use null safely
         val params = core.createCallParams(null)
-        params ?: return Result.failure(Exception("Call parameters could not be created")) // Same for params
+        params
+            ?: return Result.failure(Exception("Call parameters could not be created")) // Same for params
 
         // We can now configure it
         // Here we ask for no encryption but we could ask for ZRTP/SRTP/DTLS

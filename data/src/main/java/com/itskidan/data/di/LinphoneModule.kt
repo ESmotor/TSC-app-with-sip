@@ -1,15 +1,12 @@
 package com.itskidan.data.di
 
 import android.content.Context
-import com.itskidan.data.linphone.LinphoneCallStatusObserverImpl
-import com.itskidan.data.linphone.LinphoneCoreStatusObserverImpl
-import com.itskidan.data.linphone.LinphoneRegStatusObserverImpl
 import com.itskidan.data.linphone.LinphoneRepositoryImpl
-import com.itskidan.domain.repository.linphone.LinphoneCallStatusObserver
-import com.itskidan.domain.repository.linphone.LinphoneCoreStatusObserver
-import com.itskidan.domain.repository.linphone.LinphoneRegStatusObserver
+import com.itskidan.data.linphone.LinphoneStatesObserverImpl
+import com.itskidan.domain.PushNotifier
+import com.itskidan.domain.repository.FcmRepository
 import com.itskidan.domain.repository.linphone.LinphoneRepository
-import dagger.Binds
+import com.itskidan.domain.repository.linphone.LinphoneStatesObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,16 +19,13 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class LinphoneBindsModule {
-
-    @Binds
-    abstract fun bindLinphoneRepository(impl: LinphoneRepositoryImpl): LinphoneRepository
-
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
 object LinphoneProvidesModule {
+
+    @Provides
+    @Singleton
+    fun provideLinphoneRepository(impl: LinphoneRepositoryImpl): LinphoneRepository {
+        return impl
+    }
 
     @Provides
     @Singleton
@@ -42,7 +36,6 @@ object LinphoneProvidesModule {
             setLoggerDomain("Linphone")
             loggingService?.setLogLevel(LogLevel.Debug)
         }
-        // Factory.instance().setDebugMode(true,"Linphone")
 
         val configPath = "${context.filesDir.absolutePath}/linphone_config"
         val core = Factory.instance().createCore(configPath, configPath, context)
@@ -52,39 +45,17 @@ object LinphoneProvidesModule {
 
     @Provides
     @Singleton
-    fun provideLinphoneCallStatusObserverImpl(core: Core): LinphoneCallStatusObserverImpl {
-        return LinphoneCallStatusObserverImpl(core)
+    fun provideLinphoneStatesObserverImpl(
+        core: Core,
+        notifier: PushNotifier,
+        fcmRepository: FcmRepository
+    ): LinphoneStatesObserverImpl {
+        return LinphoneStatesObserverImpl(core, notifier, fcmRepository)
     }
 
     @Provides
     @Singleton
-    fun provideLinphoneCallStatusObserver(impl: LinphoneCallStatusObserverImpl): LinphoneCallStatusObserver {
-        return impl
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideLinphoneRegStatusObserverImpl(core: Core): LinphoneRegStatusObserverImpl {
-        return LinphoneRegStatusObserverImpl(core)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLinphoneRegStatusObserver(impl: LinphoneRegStatusObserverImpl): LinphoneRegStatusObserver {
-        return impl
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideLinphoneCoreStatusObserverImpl(core: Core): LinphoneCoreStatusObserverImpl {
-        return LinphoneCoreStatusObserverImpl(core)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLinphoneCoreStatusObserver(impl: LinphoneCoreStatusObserverImpl): LinphoneCoreStatusObserver {
+    fun provideLinphoneStatesObserver(impl: LinphoneStatesObserverImpl): LinphoneStatesObserver {
         return impl
     }
 }

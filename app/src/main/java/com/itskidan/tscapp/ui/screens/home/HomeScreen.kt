@@ -1,15 +1,19 @@
 package com.itskidan.tscapp.ui.screens.home
 
 import android.Manifest
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -71,6 +75,15 @@ fun HomeScreen(
         }
     )
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        requestPermission(
+                permission = Manifest.permission.POST_NOTIFICATIONS,
+                onGranted = {},
+                onDenied = {}
+            )
+    }
+
+
     LaunchedEffect(toastMessage) {
         toastMessage?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -92,6 +105,12 @@ fun HomeScreen(
             } else {
                 micPermissionState.launchPermissionRequest()
             }
+        },
+        onActivateService = {
+            viewModel.onActivateService()
+        },
+        onInfoClick = {
+            viewModel.onInfoClick()
         }
     )
 }
@@ -107,7 +126,9 @@ fun HomeScreenContent(
     onDrawerClose: () -> Unit,
     onMenuClick: () -> Unit,
     onBottomNavSelected: (BottomNavItem) -> Unit,
-    onCallButtonClick: () -> Unit
+    onCallButtonClick: () -> Unit,
+    onActivateService:() -> Unit,
+    onInfoClick:() -> Unit
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -140,6 +161,22 @@ fun HomeScreenContent(
                     contentDescription = "Start Call",
                     iconColor = Color.White,
                     backgroundColor = Color(0xFF4CAF50),
+                )
+                Spacer(modifier = Modifier.padding(16.dp))
+                ControlButton(
+                    onClick = onActivateService,
+                    icon = Icons.Filled.Timer,
+                    contentDescription = "End Call",
+                    iconColor = Color.White,
+                    backgroundColor = Color(0xFFF44336),
+                )
+                Spacer(modifier = Modifier.padding(16.dp))
+                ControlButton(
+                    onClick = onInfoClick,
+                    icon = Icons.Filled.Home,
+                    contentDescription = "End Call",
+                    iconColor = Color.White,
+                    backgroundColor = Color(0xFF002288),
                 )
 
 
@@ -225,7 +262,9 @@ fun MainScreenPreview() {
             onDrawerClose = {},
             onMenuClick = {},
             onBottomNavSelected = {},
-            onCallButtonClick = {}
+            onCallButtonClick = {},
+            onActivateService = {},
+            onInfoClick = {}
         )
     }
 }

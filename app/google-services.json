@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1097177499241",
+    "project_id": "tsc-linphonefcm",
+    "storage_bucket": "tsc-linphonefcm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097177499241:android:f910097cb7662026ae84f8",
+        "android_client_info": {
+          "package_name": "com.itskidan.tscapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv5CCOLjQxzN-ukjxRukXnitE3z301Sg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

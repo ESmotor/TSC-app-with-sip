@@ -60,4 +60,11 @@ dependencies {
     kaptTest (libs.hilt.compiler)
     // Timber
     implementation(libs.timber)
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    // Google Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 }

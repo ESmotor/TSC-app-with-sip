@@ -2,8 +2,8 @@ package com.itskidan.tscapp.ui.common
 
 import com.itskidan.domain.model.linphone.CallDirection
 import com.itskidan.domain.model.linphone.LinphoneCallState
-import com.itskidan.tscapp.ui.screens.outgoingcall.CallStateConfig
-import com.itskidan.tscapp.ui.screens.outgoingcall.CallUiState
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.CallStateConfig
+import com.itskidan.tscapp.ui.screens.call.outgoingcall.CallUiState
 
 fun mapSysCallStateToText(state: LinphoneCallState): String {
     return when (state) {

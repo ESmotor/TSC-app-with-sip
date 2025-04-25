@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
 }
 
 kapt {
@@ -31,6 +32,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "NOTIFY_FCM_BASE_URL", "\"https://europe-west3-tsc-linphonefcm.cloudfunctions.net/\"")
+        }
+        debug {
+            applicationIdSuffix = null
+            versionNameSuffix = "-debug"
+            isMinifyEnabled = false
+            buildConfigField("String", "NOTIFY_FCM_BASE_URL", "\"https://europe-west3-tsc-linphonefcm.cloudfunctions.net/\"")
         }
     }
     compileOptions {
@@ -42,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -67,6 +76,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
@@ -97,5 +107,8 @@ dependencies {
     implementation(libs.androidx.foundation)
     // Accompanist
     implementation(libs.accompanist.permissions)
+    // WorkManager
+    implementation (libs.androidx.work.runtime.ktx)
+    implementation (libs.androidx.hilt.work)
 }
 
