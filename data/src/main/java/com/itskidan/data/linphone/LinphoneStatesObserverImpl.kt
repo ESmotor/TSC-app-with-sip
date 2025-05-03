@@ -1,12 +1,12 @@
 package com.itskidan.data.linphone
 
 import com.itskidan.domain.PushNotifier
-import com.itskidan.domain.model.linphone.CallDirection
-import com.itskidan.domain.model.linphone.LinphoneCallState
-import com.itskidan.domain.model.linphone.LinphoneCoreState
-import com.itskidan.domain.model.linphone.LinphoneRegState
+import com.itskidan.domain.model.CallInfo
+import com.itskidan.domain.model.CallState
+import com.itskidan.domain.model.CoreState
+import com.itskidan.domain.model.SipRegistrationState
 import com.itskidan.domain.repository.FcmRepository
-import com.itskidan.domain.repository.linphone.LinphoneStatesObserver
+import com.itskidan.domain.repository.SipStatesObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,16 +26,15 @@ class LinphoneStatesObserverImpl @Inject constructor(
     core: Core,
     private val notifier: PushNotifier,
     private val fcmRepository: FcmRepository
-) : LinphoneStatesObserver {
-    private val _callState =
-        MutableStateFlow<LinphoneCallState>(LinphoneCallState.Idle(callDir = CallDirection.UNKNOWN))
-    override val callState: Flow<LinphoneCallState> = _callState.asStateFlow()
+) : SipStatesObserver {
+    private val _callState = MutableStateFlow<CallState>(CallState.Idle(CallInfo()))
+    override val callState: Flow<CallState> = _callState.asStateFlow()
 
-    private val _regState = MutableStateFlow<LinphoneRegState>(LinphoneRegState.Unknown)
-    override val registrationState: Flow<LinphoneRegState> = _regState.asStateFlow()
+    private val _regState = MutableStateFlow<SipRegistrationState>(SipRegistrationState.Unknown)
+    override val registrationState: Flow<SipRegistrationState> = _regState.asStateFlow()
 
-    private val _coreState = MutableStateFlow<LinphoneCoreState>(LinphoneCoreState.Unknown)
-    override val coreState: Flow<LinphoneCoreState> = _coreState.asStateFlow()
+    private val _coreState = MutableStateFlow<CoreState>(CoreState.Unknown)
+    override val coreState: Flow<CoreState> = _coreState.asStateFlow()
 
 
     init {
@@ -48,13 +47,13 @@ class LinphoneStatesObserverImpl @Inject constructor(
             ) {
                 Timber.tag("MyLog").d("onGlobalStateChanged: $state")
                 _coreState.value = when (state) {
-                    GlobalState.Off -> LinphoneCoreState.Off
-                    GlobalState.Startup -> LinphoneCoreState.Startup
-                    GlobalState.On -> LinphoneCoreState.On
-                    GlobalState.Shutdown -> LinphoneCoreState.Shutdown
-                    GlobalState.Configuring -> LinphoneCoreState.Configuring
-                    GlobalState.Ready -> LinphoneCoreState.Ready
-                    null -> LinphoneCoreState.Unknown
+                    GlobalState.Off -> CoreState.Off
+                    GlobalState.Startup -> CoreState.Startup
+                    GlobalState.On -> CoreState.On
+                    GlobalState.Shutdown -> CoreState.Shutdown
+                    GlobalState.Configuring -> CoreState.Configuring
+                    GlobalState.Ready -> CoreState.Ready
+                    null -> CoreState.Unknown
                 }
             }
 
@@ -66,13 +65,13 @@ class LinphoneStatesObserverImpl @Inject constructor(
             ) {
                 Timber.tag("MyLog").d("onRegistrationStateChanged: $state, message: $message")
                 _regState.value = when (state) {
-                    RegistrationState.None -> LinphoneRegState.None
-                    RegistrationState.Progress -> LinphoneRegState.Progress
-                    RegistrationState.Ok -> LinphoneRegState.Ok
-                    RegistrationState.Cleared -> LinphoneRegState.Cleared
-                    RegistrationState.Failed -> LinphoneRegState.Failed
-                    RegistrationState.Refreshing -> LinphoneRegState.Refreshing
-                    null -> LinphoneRegState.Unknown
+                    RegistrationState.None -> SipRegistrationState.None
+                    RegistrationState.Progress -> SipRegistrationState.Progress
+                    RegistrationState.Ok -> SipRegistrationState.Ok
+                    RegistrationState.Cleared -> SipRegistrationState.Cleared
+                    RegistrationState.Failed -> SipRegistrationState.Failed
+                    RegistrationState.Refreshing -> SipRegistrationState.Refreshing
+                    null -> SipRegistrationState.Unknown
                 }
             }
 
@@ -82,20 +81,14 @@ class LinphoneStatesObserverImpl @Inject constructor(
                 state: Call.State?,
                 message: String
             ) {
+
                 Timber.tag("MyLog")
-                    .d("onCallStateChanged: Dir:${call.dir}, state: $state, status: ${call.callLog.status}")
+                    .d("onCallStateChanged: Dir:${call.dir}, state: $state,remoteName: ${call.remoteAddress.displayName}, isMuted: ${call.microphoneMuted},status: ${call.callLog.status}")
 
-                val callDir = when (call.dir) {
-                    Call.Dir.Outgoing -> CallDirection.OUTGOING
-                    Call.Dir.Incoming -> {
-                        CallDirection.INCOMING
-                    }
-
-                    else -> CallDirection.UNKNOWN
-                }
 
                 _callState.value = when (state) {
-                    Call.State.Idle -> LinphoneCallState.Idle(callDir = callDir)
+                    Call.State.Idle -> CallState.Idle(call.toCallInfo())
+
                     Call.State.IncomingReceived -> {
                         Timber.tag("MyLog").d(">>>>>>>>>> Incoming Received")
                         CoroutineScope(Dispatchers.IO).launch {
@@ -109,36 +102,53 @@ class LinphoneStatesObserverImpl @Inject constructor(
                             }
                         }
 
-                        LinphoneCallState.IncomingReceived(callDir = callDir)
+                        CallState.IncomingReceived(call.toCallInfo())
                     }
 
                     Call.State.PushIncomingReceived -> {
                         Timber.tag("MyLog").d(">>>>>>>>>> Push Incoming Received")
-                        LinphoneCallState.PushIncomingReceived(callDir = callDir)
+                        CallState.PushIncomingReceived(call.toCallInfo())
                     }
 
-                    Call.State.OutgoingInit -> LinphoneCallState.OutgoingInit(callDir = callDir)
-                    Call.State.OutgoingProgress -> LinphoneCallState.OutgoingProgress(callDir = callDir)
-                    Call.State.OutgoingRinging -> LinphoneCallState.OutgoingRinging(callDir = callDir)
-                    Call.State.OutgoingEarlyMedia -> LinphoneCallState.OutgoingEarlyMedia(callDir = callDir)
-                    Call.State.Connected -> LinphoneCallState.Connected(callDir = callDir)
-                    Call.State.StreamsRunning -> LinphoneCallState.StreamsRunning(callDir = callDir)
-                    Call.State.Pausing -> LinphoneCallState.Pausing(callDir = callDir)
-                    Call.State.Paused -> LinphoneCallState.Paused(callDir = callDir)
-                    Call.State.Resuming -> LinphoneCallState.Resuming(callDir = callDir)
-                    Call.State.Referred -> LinphoneCallState.Referred(callDir = callDir)
-                    Call.State.Error -> LinphoneCallState.Error(callDir = callDir)
-                    Call.State.End -> LinphoneCallState.End(callDir = callDir)
-                    Call.State.PausedByRemote -> LinphoneCallState.PausedByRemote(callDir = callDir)
-                    Call.State.UpdatedByRemote -> LinphoneCallState.UpdatedByRemote(callDir = callDir)
-                    Call.State.IncomingEarlyMedia -> LinphoneCallState.IncomingEarlyMedia(callDir = callDir)
-                    Call.State.Updating -> LinphoneCallState.Updating(callDir = callDir)
-                    Call.State.Released -> LinphoneCallState.Released(callDir = callDir)
-                    Call.State.EarlyUpdatedByRemote -> LinphoneCallState.EarlyUpdatedByRemote(
-                        callDir = callDir
-                    )
-                    Call.State.EarlyUpdating -> LinphoneCallState.EarlyUpdating(callDir = callDir)
-                    null -> LinphoneCallState.Unknown(callDir = callDir)
+                    Call.State.OutgoingInit -> CallState.OutgoingInit(call.toCallInfo())
+
+                    Call.State.OutgoingProgress -> CallState.OutgoingProgress(call.toCallInfo())
+
+                    Call.State.OutgoingRinging -> CallState.OutgoingRinging(call.toCallInfo())
+
+                    Call.State.OutgoingEarlyMedia -> CallState.OutgoingEarlyMedia(call.toCallInfo())
+
+                    Call.State.Connected -> CallState.Connected(call.toCallInfo())
+
+                    Call.State.StreamsRunning -> CallState.StreamsRunning(call.toCallInfo())
+
+                    Call.State.Pausing -> CallState.Pausing(call.toCallInfo())
+
+                    Call.State.Paused -> CallState.Paused(call.toCallInfo())
+
+                    Call.State.Resuming -> CallState.Resuming(call.toCallInfo())
+
+                    Call.State.Referred -> CallState.Referred(call.toCallInfo())
+
+                    Call.State.Error -> CallState.Error(call.toCallInfo())
+
+                    Call.State.End -> CallState.End(call.toCallInfo())
+
+                    Call.State.PausedByRemote -> CallState.PausedByRemote(call.toCallInfo())
+
+                    Call.State.UpdatedByRemote -> CallState.UpdatedByRemote(call.toCallInfo())
+
+                    Call.State.IncomingEarlyMedia -> CallState.IncomingEarlyMedia(call.toCallInfo())
+
+                    Call.State.Updating -> CallState.Updating(call.toCallInfo())
+
+                    Call.State.Released -> CallState.Released(call.toCallInfo())
+
+                    Call.State.EarlyUpdatedByRemote -> CallState.EarlyUpdatedByRemote(call.toCallInfo())
+
+                    Call.State.EarlyUpdating -> CallState.EarlyUpdating(call.toCallInfo())
+
+                    null -> CallState.Unknown(call.toCallInfo())
                 }
             }
 

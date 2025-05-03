@@ -126,6 +126,18 @@ val unspecified_scheme = ColorFamily(
     Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
 )
 
+// CompositionLocal to store shapes
+@Immutable
+data class Shapes(
+    val none: Dp = 0.dp,
+    val extraSmall: Dp = 4.dp,
+    val small: Dp = 8.dp,
+    val medium: Dp = 12.dp,
+    val large: Dp = 16.dp,
+    val extraLarge: Dp = 28.dp,
+)
+val LocalShapes = staticCompositionLocalOf { Shapes() }
+
 // CompositionLocal to store padding
 @Immutable
 data class PaddingValues(
@@ -171,7 +183,9 @@ fun AppTheme(
 
     CompositionLocalProvider(
         LocalPaddingValues provides paddingValues,
-        LocalWindowSizeClass provides windowSizeClass
+        LocalWindowSizeClass provides windowSizeClass,
+        LocalShapes provides Shapes(),
+
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".IncomingCallActivity"
+            android:name=".ui.screens.call.CallActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTop"
