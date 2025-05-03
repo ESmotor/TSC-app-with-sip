@@ -1,7 +1,7 @@
 package com.itskidan.tscapp.app
 
 import android.app.Application
-import com.itskidan.tscapp.utils.LifecycleObserver
+import com.itskidan.tscapp.ui.utils.LifecycleObserver
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 

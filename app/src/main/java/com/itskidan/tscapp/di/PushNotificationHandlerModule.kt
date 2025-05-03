@@ -1,8 +1,8 @@
 package com.itskidan.tscapp.di
 
 import android.content.Context
-import com.itskidan.domain.repository.linphone.PushNotificationHandler
-import com.itskidan.tscapp.utils.PushNotificationHandlerImpl
+import com.itskidan.domain.repository.PushNotificationHandler
+import com.itskidan.tscapp.core.notification.PushNotificationHandlerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

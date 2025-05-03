@@ -5,8 +5,8 @@ import com.itskidan.data.linphone.LinphoneRepositoryImpl
 import com.itskidan.data.linphone.LinphoneStatesObserverImpl
 import com.itskidan.domain.PushNotifier
 import com.itskidan.domain.repository.FcmRepository
-import com.itskidan.domain.repository.linphone.LinphoneRepository
-import com.itskidan.domain.repository.linphone.LinphoneStatesObserver
+import com.itskidan.domain.repository.SipRepository
+import com.itskidan.domain.repository.SipStatesObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,7 @@ object LinphoneProvidesModule {
 
     @Provides
     @Singleton
-    fun provideLinphoneRepository(impl: LinphoneRepositoryImpl): LinphoneRepository {
+    fun provideLinphoneRepository(impl: LinphoneRepositoryImpl): SipRepository {
         return impl
     }
 
@@ -55,7 +55,7 @@ object LinphoneProvidesModule {
 
     @Provides
     @Singleton
-    fun provideLinphoneStatesObserver(impl: LinphoneStatesObserverImpl): LinphoneStatesObserver {
+    fun provideLinphoneStatesObserver(impl: LinphoneStatesObserverImpl): SipStatesObserver {
         return impl
     }
 }

@@ -6,13 +6,13 @@ import com.itskidan.data.config.LinphoneConfig
 import com.itskidan.domain.model.DrawerItem
 import com.itskidan.domain.repository.FcmRepository
 import com.itskidan.domain.usecase.GetDrawerItemsUseCase
-import com.itskidan.domain.usecase.linphone.LinphoneMakeCallUseCase
-import com.itskidan.domain.usecase.linphone.LinphoneRegAccountUseCase
+import com.itskidan.domain.usecase.linphone.MakeCallUseCase
+import com.itskidan.domain.usecase.linphone.SipRegistrationUseCase
 import com.itskidan.domain.usecase.linphone.ObserveStatesUseCase
 import com.itskidan.tscapp.navigation.BottomNavItem
-import com.itskidan.tscapp.ui.common.mapCoreStateToText
-import com.itskidan.tscapp.ui.common.mapRegistrationStateToText
-import com.itskidan.tscapp.ui.common.mapSysCallStateToText
+import com.itskidan.tscapp.ui.mapper.mapCoreStateToText
+import com.itskidan.tscapp.ui.mapper.mapRegistrationStateToText
+import com.itskidan.tscapp.ui.mapper.mapSysCallStateToText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,8 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getDrawerItemsUseCase: GetDrawerItemsUseCase,
-    private val linphoneMakeCallUseCase: LinphoneMakeCallUseCase,
-    private val linphoneRegAccountUseCase: LinphoneRegAccountUseCase,
+    private val linphoneMakeCallUseCase: MakeCallUseCase,
+    private val linphoneRegAccountUseCase: SipRegistrationUseCase,
     private val observeStatesUseCase: ObserveStatesUseCase,
     private val core: Core
 
@@ -75,8 +75,11 @@ class HomeViewModel @Inject constructor(
     // BottomNavMenu
     fun onBottomNavSelected(item: BottomNavItem) {
         val message = when (item) {
-            is BottomNavItem.Home -> "Main Selected"
-            is BottomNavItem.Settings -> "Settings Selected"
+            BottomNavItem.Home -> "Main Selected"
+            BottomNavItem.Help -> "Help Selected"
+            BottomNavItem.Directory -> "Directory Selected"
+            BottomNavItem.Events -> "Events Selected"
+            BottomNavItem.More -> "More Selected"
         }
         _toastMessage.value = message
     }
@@ -139,14 +142,25 @@ class HomeViewModel @Inject constructor(
             registerSIPAccount()
         }
     }
+
     fun onInfoClick() {
         viewModelScope.launch {
             val accountList = core.accountList
-            accountList.forEach {account->
+            accountList.forEach { account ->
                 val params = account.params
                 val identity = params.identity
                 Timber.tag("MyLog").d("[onInfoClick] account $identity")
             }
+        }
+    }
+
+    fun onDeleteClick() {
+        viewModelScope.launch {
+            val callList = core.calls
+            callList.forEach { call ->
+                call.terminate()
+            }
+            core.clearAccounts()
         }
     }
 

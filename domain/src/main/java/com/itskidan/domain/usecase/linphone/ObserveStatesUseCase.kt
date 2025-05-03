@@ -1,16 +1,16 @@
 package com.itskidan.domain.usecase.linphone
 
-import com.itskidan.domain.model.linphone.LinphoneCallState
-import com.itskidan.domain.model.linphone.LinphoneCoreState
-import com.itskidan.domain.model.linphone.LinphoneRegState
-import com.itskidan.domain.repository.linphone.LinphoneStatesObserver
+import com.itskidan.domain.model.CallState
+import com.itskidan.domain.model.CoreState
+import com.itskidan.domain.model.SipRegistrationState
+import com.itskidan.domain.repository.SipStatesObserver
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ObserveStatesUseCase @Inject constructor(
-    private val linphoneStatesObserver: LinphoneStatesObserver
+    private val sipStatesObserver: SipStatesObserver
 ) {
-    fun getCallState(): Flow<LinphoneCallState> = linphoneStatesObserver.callState
-    fun getRegState(): Flow<LinphoneRegState> = linphoneStatesObserver.registrationState
-    fun getCoreState(): Flow<LinphoneCoreState> = linphoneStatesObserver.coreState
+    fun getCallState(): Flow<CallState> = sipStatesObserver.callState
+    fun getRegState(): Flow<SipRegistrationState> = sipStatesObserver.registrationState
+    fun getCoreState(): Flow<CoreState> = sipStatesObserver.coreState
 }

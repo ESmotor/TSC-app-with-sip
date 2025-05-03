@@ -1,20 +1,22 @@
 package com.itskidan.data.linphone
 
 
-import com.itskidan.domain.repository.linphone.LinphoneRepository
-import com.itskidan.domain.repository.linphone.LinphoneStatesObserver
+import com.itskidan.domain.repository.SipRepository
+import com.itskidan.domain.repository.SipStatesObserver
 import org.linphone.core.Core
 import org.linphone.core.Factory
 import org.linphone.core.MediaEncryption
 import org.linphone.core.TransportType
+import timber.log.Timber
 import javax.inject.Inject
 
 class LinphoneRepositoryImpl @Inject constructor(
     private val core: Core,
-    @Suppress("unused") private val statesObserver: LinphoneStatesObserver,
-) : LinphoneRepository {
+    @Suppress("unused") private val statesObserver: SipStatesObserver,
+) : SipRepository {
 
     init {
+        core.isPushNotificationEnabled = true
         core.start()
     }
 
@@ -54,6 +56,10 @@ class LinphoneRepositoryImpl @Inject constructor(
         call.terminate()
     }
 
+    override suspend fun answerCall(): Result<Unit> = runCatching {
+        core.currentCall?.accept()
+    }
+
     override suspend fun registerAccount(
         username: String,
         domain: String,
@@ -83,10 +89,17 @@ class LinphoneRepositoryImpl @Inject constructor(
         accountParams.isRegisterEnabled = true
         accountParams.transport = transportType
 
+        accountParams.pushNotificationAllowed = true
+
         core.addAuthInfo(authInfo)
         val account = core.createAccount(accountParams)
         core.addAccount(account)
         core.defaultAccount = account
+
+        if (!core.isPushNotificationAvailable) {
+            Timber.tag("MyLog").d("Push is not available, Something is wrong with the push setup!")
+        }
+
     }
 
 // ... other methods implementing Linphone operations via core

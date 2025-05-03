@@ -3,7 +3,7 @@ package com.itskidan.data.firebase.service
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.itskidan.domain.FcmTokenSync
-import com.itskidan.domain.repository.linphone.PushNotificationHandler
+import com.itskidan.domain.repository.PushNotificationHandler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

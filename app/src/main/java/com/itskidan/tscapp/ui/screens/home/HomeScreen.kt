@@ -1,6 +1,7 @@
 package com.itskidan.tscapp.ui.screens.home
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
@@ -41,14 +43,16 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.itskidan.domain.model.DrawerItem
 import com.itskidan.tscapp.navigation.BottomNavItem
-import com.itskidan.tscapp.navigation.NavConst
-import com.itskidan.tscapp.ui.components.ControlButton
-import com.itskidan.tscapp.ui.components.DrawerContent
-import com.itskidan.tscapp.ui.components.MainBottomNavigation
-import com.itskidan.tscapp.ui.components.MainTopBar
-import com.itskidan.tscapp.ui.components.requestPermission
+import com.itskidan.tscapp.ui.components.controls.ControlButton
+import com.itskidan.tscapp.ui.components.controls.SwipeControlButton
+import com.itskidan.tscapp.ui.components.drawer.DrawerContent
+import com.itskidan.tscapp.ui.components.navigation.MainBottomNavigation
+import com.itskidan.tscapp.ui.components.navigation.MainTopBar
+import com.itskidan.tscapp.ui.components.permissions.requestPermission
+import com.itskidan.tscapp.ui.screens.call.CallActivity
 import com.itskidan.tscapp.ui.theme.AppTheme
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -77,10 +81,10 @@ fun HomeScreen(
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         requestPermission(
-                permission = Manifest.permission.POST_NOTIFICATIONS,
-                onGranted = {},
-                onDenied = {}
-            )
+            permission = Manifest.permission.POST_NOTIFICATIONS,
+            onGranted = {},
+            onDenied = {}
+        )
     }
 
 
@@ -101,7 +105,12 @@ fun HomeScreen(
         onCallButtonClick = {
             if (micPermissionState.status.isGranted) {
                 viewModel.onMakeCallClicked()
-                navController.navigate(NavConst.OUTGOING_CALL)
+                val intent = Intent(context, CallActivity::class.java).apply {
+                    // if you need to pass something to the activity
+                    //putExtra("EXTRA_IS_INCOMING", false)......
+                }
+                context.startActivity(intent)
+                Timber.Forest.tag("MyLog").d("[CallActivity] is started()")
             } else {
                 micPermissionState.launchPermissionRequest()
             }
@@ -111,6 +120,9 @@ fun HomeScreen(
         },
         onInfoClick = {
             viewModel.onInfoClick()
+        },
+        onDeleteClick = {
+            viewModel.onDeleteClick()
         }
     )
 }
@@ -127,8 +139,9 @@ fun HomeScreenContent(
     onMenuClick: () -> Unit,
     onBottomNavSelected: (BottomNavItem) -> Unit,
     onCallButtonClick: () -> Unit,
-    onActivateService:() -> Unit,
-    onInfoClick:() -> Unit
+    onActivateService: () -> Unit,
+    onInfoClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -179,6 +192,25 @@ fun HomeScreenContent(
                     backgroundColor = Color(0xFF002288),
                 )
 
+                Spacer(modifier = Modifier.padding(16.dp))
+                ControlButton(
+                    onClick = onDeleteClick,
+                    icon = Icons.Filled.DeleteForever,
+                    contentDescription = "End Call",
+                    iconColor = Color.White,
+                    backgroundColor = Color(0xFF002288),
+                )
+                Spacer(modifier = Modifier.padding(16.dp))
+
+                SwipeControlButton(
+                    onSwipeComplete = {
+                        Timber.Forest.tag("MyLog").d("[SwipeUpButton] onSwipeUp()")
+                    },
+                    icon = Icons.Filled.DeleteForever,
+                    contentDescription = "End Call",
+                    iconColor = Color.White,
+                    backgroundColor = Color(0xFF002288),
+                )
 
             }
         }
@@ -264,7 +296,8 @@ fun MainScreenPreview() {
             onBottomNavSelected = {},
             onCallButtonClick = {},
             onActivateService = {},
-            onInfoClick = {}
+            onInfoClick = {},
+            onDeleteClick = {}
         )
     }
 }

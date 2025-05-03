@@ -2,12 +2,12 @@ package com.itskidan.tscapp.ui.common.avatar
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.itskidan.tscapp.ui.model.AvatarParams
-import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig
-import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_COMPACT_SCALE
-import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_DEFAULT_SCALE
-import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_EXPANDED_SCALE
-import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_MEDIUM_SCALE
-import com.itskidan.tscapp.ui.screens.call.outgoingcall.OutgoingCallScreenConfig.AVATAR_SCALE_COEFFICIENT
+import com.itskidan.tscapp.ui.screens.call.CallScreenConfig
+import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_COMPACT_SCALE
+import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_DEFAULT_SCALE
+import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_EXPANDED_SCALE
+import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_MEDIUM_SCALE
+import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_SCALE_COEFFICIENT
 
 fun getAvatarParams(
     windowSizeClass: WindowWidthSizeClass,
@@ -16,11 +16,11 @@ fun getAvatarParams(
     return AvatarParams(
         image = avatarImage,
         scale = getAvatarScale(windowSizeClass),
-        minSize = OutgoingCallScreenConfig.AVATAR_MIN_SIZE,
-        maxSize = OutgoingCallScreenConfig.AVATAR_MAX_SIZE,
-        compactBreakpoint = OutgoingCallScreenConfig.COMPACT_BREAKPOINT,
-        description = OutgoingCallScreenConfig.avatarDescRes.toString(),
-        placeholder = OutgoingCallScreenConfig.avatarPlaceholder
+        minSize = CallScreenConfig.AVATAR_MIN_SIZE,
+        maxSize = CallScreenConfig.AVATAR_MAX_SIZE,
+        compactBreakpoint = CallScreenConfig.COMPACT_BREAKPOINT,
+        description = CallScreenConfig.avatarDescRes.toString(),
+        placeholder = CallScreenConfig.avatarPlaceholder
     )
 }
 

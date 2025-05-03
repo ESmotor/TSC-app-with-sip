@@ -4,6 +4,7 @@ agp = "8.9.0"
 coilCompose = "2.6.0"
 firebaseBom = "33.12.0"
 foundation = "1.7.8"
+googleServicesVersion = "4.4.2"
 hiltWork = "1.2.0"
 javaxInject = "1"
 kotlin = "2.0.21"
@@ -58,6 +59,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 
 # Google Firebase
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServicesVersion" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }

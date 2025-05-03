@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.itskidan.tscapp.app.App
 import com.itskidan.tscapp.navigation.NavGraph
+import com.itskidan.tscapp.ui.screens.HomeFinal
 import com.itskidan.tscapp.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +31,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             AppTheme {
-                NavGraph(navController)
+//                NavGraph(navController)
+                HomeFinal()
             }
         }
     }
