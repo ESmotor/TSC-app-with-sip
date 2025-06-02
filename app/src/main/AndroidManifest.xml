@@ -39,13 +39,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.screens.call.CallActivity"
+            android:name=".ui.features.call.CallActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|screenLayout|locale"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTop"
             android:showWhenLocked="true"
             android:theme="@style/Theme.TSCapp"
-            android:turnScreenOn="true" />
+            android:turnScreenOn="true"
+            tools:ignore="LockedOrientationActivity"/>
 
         <service
             android:name="com.itskidan.data.firebase.service.AppPushService"

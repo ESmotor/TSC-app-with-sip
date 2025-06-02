@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    alias(libs.plugins.jetbrains.kotlin.jvm)
+    alias(libs.plugins.kotlin.jvm)
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -13,8 +13,8 @@ kotlin {
 }
 dependencies {
     // Coroutines
-    implementation(libs.coroutines.core)
-    implementation(libs.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     // Inject
     implementation (libs.javax.inject)
 }

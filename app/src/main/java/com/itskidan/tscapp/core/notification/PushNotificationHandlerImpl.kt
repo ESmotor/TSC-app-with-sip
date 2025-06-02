@@ -10,7 +10,7 @@ import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import com.itskidan.domain.repository.PushNotificationHandler
 import com.itskidan.tscapp.R
-import com.itskidan.tscapp.ui.screens.call.CallActivity
+import com.itskidan.tscapp.ui.features.call.CallActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import javax.inject.Inject
