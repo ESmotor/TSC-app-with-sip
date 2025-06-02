@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.gms)
 }
 
 kapt {
@@ -61,32 +61,32 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation (libs.androidx.runtime.livedata)
+    implementation (libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Coroutines
-    implementation(libs.coroutines.core)
-    implementation(libs.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     // Google
-    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.compose.ui.text.google.fonts)
     //implementation (libs.play.services.fonts)
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     // Hilt. For instrumentation tests
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
@@ -96,19 +96,21 @@ dependencies {
     // Timber
     implementation(libs.timber)
     // linphone
-    implementation(libs.linphone)
+    implementation(libs.linphone.sdk)
     // Material 3
-    implementation(libs.androidx.material3.window.size.class1)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
     // material-icon
-    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.compose.material.iconsExtended)
     // Coil
-    implementation(libs.coil.compose)
+    implementation(libs.coil.kt.compose)
+    implementation(libs.coil.kt.svg)
     // For basic components
-    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.compose.foundation)
     // Accompanist
     implementation(libs.accompanist.permissions)
     // WorkManager
     implementation (libs.androidx.work.runtime.ktx)
     implementation (libs.androidx.hilt.work)
+
 }
 

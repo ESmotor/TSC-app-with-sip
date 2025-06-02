@@ -42,16 +42,16 @@ dependencies {
     implementation (libs.androidx.media)
     implementation(libs.material)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     // Inject
     implementation (libs.javax.inject)
     // linphone
-    implementation(libs.linphone)
+    implementation(libs.linphone.sdk)
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     // Hilt. For instrumentation tests
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
@@ -61,11 +61,12 @@ dependencies {
     // Timber
     implementation(libs.timber)
     // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converterGson)
     // Google Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
     implementation(libs.google.services)
+    implementation(libs.firebase.storage)
 }

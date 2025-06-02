@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.itskidan.tscapp.ui.screens.home.HomeScreen
+import com.itskidan.tscapp.ui.features.home.HomeScreen
 
 object NavConst {
     // for Navigation
@@ -18,6 +18,10 @@ fun NavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = NavConst.HOME
     ) {
-        composable(NavConst.HOME) { HomeScreen(navController = navController) }
+        composable(NavConst.HOME) {
+            HomeScreen(
+                navController = navController
+            )
+        }
     }
 }

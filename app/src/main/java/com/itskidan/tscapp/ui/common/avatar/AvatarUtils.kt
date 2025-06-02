@@ -2,12 +2,12 @@ package com.itskidan.tscapp.ui.common.avatar
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.itskidan.tscapp.ui.model.AvatarParams
-import com.itskidan.tscapp.ui.screens.call.CallScreenConfig
-import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_COMPACT_SCALE
-import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_DEFAULT_SCALE
-import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_EXPANDED_SCALE
-import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_MEDIUM_SCALE
-import com.itskidan.tscapp.ui.screens.call.CallScreenConfig.AVATAR_SCALE_COEFFICIENT
+import com.itskidan.tscapp.ui.features.call.CallScreenConfig
+import com.itskidan.tscapp.ui.features.call.CallScreenConfig.AVATAR_COMPACT_SCALE
+import com.itskidan.tscapp.ui.features.call.CallScreenConfig.AVATAR_DEFAULT_SCALE
+import com.itskidan.tscapp.ui.features.call.CallScreenConfig.AVATAR_EXPANDED_SCALE
+import com.itskidan.tscapp.ui.features.call.CallScreenConfig.AVATAR_MEDIUM_SCALE
+import com.itskidan.tscapp.ui.features.call.CallScreenConfig.AVATAR_SCALE_COEFFICIENT
 
 fun getAvatarParams(
     windowSizeClass: WindowWidthSizeClass,
